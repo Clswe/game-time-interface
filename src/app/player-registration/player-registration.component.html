@@ -1,0 +1,10 @@
+<mat-card>
+  <mat-card-title>Registrar Jogador</mat-card-title>
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome do Jogador</mat-label>
+      <input matInput [(ngModel)]="playerName" placeholder="Digite o nome" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="registerPlayer()">Registrar</button>
+  </mat-card-content>
+</mat-card>

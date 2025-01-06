@@ -1,0 +1,58 @@
+<mat-card>
+  <mat-card-title>Estado do Jogo</mat-card-title>
+  <mat-card-content>
+    <section>
+      <h3>Jogadores:</h3>
+      <ul>
+        <li *ngFor="let player of players">
+          {{ player.name }} - Tempo Total: {{ player.totalTime || 0 }}s
+        </li>
+      </ul>
+      <p *ngIf="players.length < 2" class="message">
+        Aguardando jogadores suficientes para iniciar...
+      </p>
+    </section>
+
+    <section *ngIf="currentPlayer">
+      <h3>Informações do Turno</h3>
+      <p><strong>Turno Atual:</strong> {{ currentTurn }}</p>
+      <p><strong>Jogador Atual:</strong> {{ currentPlayer.name }}</p>
+      <p><strong>Tempo Restante:</strong> {{ timer }}s</p>
+    </section>
+
+    <section *ngIf="eliminatedPlayers.length > 0">
+      <h3>Jogadores Eliminados:</h3>
+      <ul>
+        <li *ngFor="let player of eliminatedPlayers">
+          {{ player.name }}
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <p>{{ message }}</p>
+    </section>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="startGame()"
+      [disabled]="players.length < 2"
+    >
+      Iniciar Jogo
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="onPlayerClick(5)"
+      [disabled]="!currentPlayer || players.length < 2"
+    >
+      Jogar
+    </button>
+    <button mat-raised-button color="warn" (click)="endGame()">
+      Finalizar Jogo
+    </button>
+  </mat-card-actions>
+</mat-card>
