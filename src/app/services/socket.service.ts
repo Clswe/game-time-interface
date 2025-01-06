@@ -7,17 +7,13 @@ import { Observable, Subject } from 'rxjs';
 })
 export class SocketService {
   private socket!: Socket;
-  private playerUpdateSubject = new Subject<any>();  // Sujeito para emitir atualizações do jogador
-  playerUpdate$ = this.playerUpdateSubject.asObservable(); // Observable que o componente pode assinar
+  private playerUpdateSubject = new Subject<any>();
+  playerUpdate$ = this.playerUpdateSubject.asObservable();
 
   constructor() {
     this.initializeSocket();
   }
 
-  /**
-   * Inicializa a conexão do WebSocket com o servidor.
-   * Define os eventos para conexão, erro, reconexão e desconexão.
-   */
   private initializeSocket(): void {
     try {
       this.socket = io('http://localhost:5000', {
@@ -46,7 +42,6 @@ export class SocketService {
         console.error('Falha ao tentar reconectar ao servidor WebSocket.');
       });
 
-
       this.socket.on('player-update', (data) => {
         console.log('Atualização do jogador recebida:', data);
         this.playerUpdateSubject.next(data);
@@ -57,11 +52,7 @@ export class SocketService {
     }
   }
 
-  /**
-   * Método para registrar eventos no socket.
-   * @param event - Nome do evento a ser registrado.
-   * @param callback - Função de calback a ser chamada quando o evento ocorrer.
-   */
+
   on(event: string, callback: (...args: any[]) => void): void {
     if (this.socket) {
       this.socket.on(event, callback);
@@ -71,10 +62,6 @@ export class SocketService {
     }
   }
 
-  /**
-   * Gera um evento para o servidor WebSocket com os dados do jogador.
-   * @param playerData - Objeto contendo os dados do jogador (socketId, name, totalTime, isActive).
-   */
   emitPlayerUpdate(playerData: { socketId: string, name: string, totalTime: number, isActive: boolean }): void {
     if (this.isConnected()) {
       console.log('Emitindo evento player-update com dados:', playerData);
@@ -85,11 +72,7 @@ export class SocketService {
     }
   }
 
-  /**
-   * Gera um evento para o servidor WebSocket.
-   * @param event - O nome do evento a ser emitido.
-   * @param data - Os dados a serem enviados com o evento.
-   */
+
   emit(event: string, data?: any): void {
     if (this.isConnected()) {
       console.log(`Emitindo evento: ${event} com dados:`, data);
@@ -100,26 +83,17 @@ export class SocketService {
     }
   }
 
-  /**
-   * Verifica se o socket está conectado ao servidor WebSocket.
-   * @returns {boolean} Retorna true se estiver conectado, caso contrário, false.
-   */
+
   isConnected(): boolean {
     return this.socket && this.socket.connected;
   }
 
-  /**
-   * Método para desinscrever do evento de atualização do jogador.
-   * O componente pode se inscrever neste método para receber atualizações do jogador.
-   * @returns {Observable<any>} Retorna um Observable que emite dados de atualização do jogador.
-   */
+
   onPlayerUpdate(): Observable<any> {
     return this.playerUpdate$;
   }
 
-  /**
-   * Desconecta o socket do servidor WebSocket.
-   */
+
   disconnect(): void {
     if (this.isConnected()) {
       this.socket.disconnect();
@@ -135,6 +109,5 @@ export class SocketService {
 
   private handleConnectionError(error: any) {
     console.error('Erro na conexão com o servidor WebSocket:', error);
-
   }
 }

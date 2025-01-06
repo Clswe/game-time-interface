@@ -10,44 +10,54 @@ export class GameComponent implements OnInit, OnDestroy {
   playerData: any;
   socketConnected: boolean = false;
 
+
+  players: any[] = [];
+  currentPlayer: any;
+  currentTurn: number = 1;
+  eliminatedPlayers: any[] = [];
+  message: string = '';
+  timer: number = 0;
+
   constructor(private socketService: SocketService) {}
 
   ngOnInit(): void {
-    // Inscrever-se no evento player-update para receber atualizações em tempo real
+
     this.socketService.on('player-update', (data: any) => {
       console.log('Recebido evento player-update:', data);
-      this.playerData = data;  // Atualiza a informação do jogador
+      this.playerData = data;
+      this.updatePlayersList(data);
     });
 
-    // Verificar se o socket está conectado
     this.socketConnected = this.socketService.isConnected();
   }
 
   ngOnDestroy(): void {
-    // Caso precise desconectar ou limpar eventos quando o componente for destruído
     this.socketService.disconnect();
   }
 
-  // Exemplo de como emitir um evento para o servidor
-  sendPlayerUpdate(): void {
-    const playerData = {
-      socketId: 'abc123',
-      name: 'Player1',
-      totalTime: 100,
-      isActive: true
-    };
+  updatePlayersList(playerData: any): void {
+    const existingPlayerIndex = this.players.findIndex(player => player.socketId === playerData.socketId);
+    if (existingPlayerIndex !== -1) {
 
-    this.socketService.emitPlayerUpdate(playerData);
+      this.players[existingPlayerIndex] = playerData;
+    } else {
+
+      this.players.push(playerData);
+    }
   }
 
-  // Método para emitir evento manualmente
-  emitCustomEvent(): void {
-    const eventData = { message: 'Custom event data' };
-    this.socketService.emit('custom-event', eventData);
+  startGame(): void {
+    console.log('Jogo iniciado');
+    this.message = 'Jogo iniciado!';
   }
 
-  // Método para verificar a conexão do socket
-  checkConnection(): void {
-    this.socketConnected = this.socketService.isConnected();
+  onPlayerClick(playerId: number): void {
+    console.log(`Jogador ${playerId} fez uma jogada`);
+    this.message = `Jogador ${playerId} fez uma jogada!`;
+  }
+
+  endGame(): void {
+    console.log('Jogo finalizado');
+    this.message = 'Jogo finalizado!';
   }
 }

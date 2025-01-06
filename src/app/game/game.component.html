@@ -16,7 +16,7 @@
     <section *ngIf="currentPlayer">
       <h3>Informações do Turno</h3>
       <p><strong>Turno Atual:</strong> {{ currentTurn }}</p>
-      <p><strong>Jogador Atual:</strong> {{ currentPlayer.name }}</p>
+      <p><strong>Jogador Atual:</strong> {{ currentPlayer?.name }}</p>
       <p><strong>Tempo Restante:</strong> {{ timer }}s</p>
     </section>
 
@@ -27,6 +27,13 @@
           {{ player.name }}
         </li>
       </ul>
+    </section>
+
+    <section *ngIf="playerData">
+      <h3>Dados do Jogador Atual</h3>
+      <p><strong>Nome:</strong> {{ playerData?.name }}</p>
+      <p><strong>Tempo Total:</strong> {{ playerData?.totalTime || 0 }}s</p>
+      <p><strong>Ativo:</strong> {{ playerData?.isActive ? 'Sim' : 'Não' }}</p>
     </section>
 
     <section>
